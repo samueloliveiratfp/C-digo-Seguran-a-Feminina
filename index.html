@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Quiz Segurança Feminina</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+  /* Layout: uma coluna central de até 480px, telas empilhadas com revelação por etapa.
+     Paleta: verde (base), creme (fundo), terracota (seleção), laranja (ação), sálvia e pêssego (apoio). */
+  :root {
+    --bg: #FBF7F2;
+    --fg: #2F4F3E;
+    --muted: #5C6E63;
+    --card: #F6E3D9;
+    --sel: #A0522D;
+    --accent: #E8833A;
+    --sage: #E3EEE7;
+    --peach: #F6C9A8;
+    --hero-bg: #2F4F3E;
+    --hero-fg: #FBF7F2;
+    --on-accent: #2F4F3E;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1E2A23;
+      --fg: #F4EEE6;
+      --muted: #C9BFB2;
+      --card: #2E3D34;
+      --sel: #D98A5E;
+      --accent: #E8833A;
+      --sage: #26352C;
+      --peach: #4A3428;
+      --hero-bg: #2F4F3E;
+      --hero-fg: #FBF7F2;
+      --on-accent: #2F4F3E;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1E2A23;
+    --fg: #F4EEE6;
+    --muted: #C9BFB2;
+    --card: #2E3D34;
+    --sel: #D98A5E;
+    --accent: #E8833A;
+    --sage: #26352C;
+    --peach: #4A3428;
+    --hero-bg: #2F4F3E;
+    --hero-fg: #FBF7F2;
+    --on-accent: #2F4F3E;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-top: 16px;
+    padding-bottom: 32px;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; min-width: 0; }
+
+  .progress { height: 6px; background: var(--sage); border-radius: 999px; overflow: hidden; margin: 8px 0 24px; }
+  .progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width .35s ease; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; min-height: 32px; }
+  .back {
+    background: none; border: 0; color: var(--muted); font: inherit; font-size: 14px;
+    padding: 6px 0; cursor: pointer;
+  }
+  .back:focus-visible, button:focus-visible, input:focus-visible, a:focus-visible {
+    outline: 3px solid var(--accent); outline-offset: 2px;
+  }
+
+  .screen { animation: rise .4s ease both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .screen, .progress-fill { animation: none; transition: none; } }
+
+  h1, h2 {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    line-height: 1.2;
+    text-wrap: balance;
+    margin: 0 0 12px;
+  }
+  h1 { font-size: 30px; }
+  h2 { font-size: 24px; }
+  p { margin: 0 0 14px; }
+  .muted { color: var(--muted); font-size: 15px; }
+  .kicker {
+    text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 700;
+    color: var(--sel); margin-bottom: 10px;
+  }
+
+  .hero {
+    background: var(--hero-bg); color: var(--hero-fg);
+    border-radius: 20px; padding: 28px 22px; margin-top: 8px;
+  }
+  .hero .kicker {
+    display: inline-block; background: var(--accent); color: var(--on-accent);
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .welcome { margin-top: 28px; }
+  .welcome h1 { font-size: 40px; color: var(--fg); margin-bottom: 18px; }
+  .welcome .lead { font-size: 18px; color: var(--muted); margin-bottom: 8px; }
+  @media (max-width: 360px) { .welcome h1 { font-size: 32px; } }
+  .hero .lead { font-size: 17px; color: var(--hero-fg); opacity: .92; }
+  .hero h1 { color: var(--hero-fg); }
+
+  .btn {
+    display: block; width: 100%; text-align: center; text-decoration: none;
+    background: var(--accent); color: var(--on-accent);
+    border: 0; border-radius: 14px; padding: 16px 18px;
+    font: inherit; font-weight: 800; font-size: 17px; cursor: pointer; margin-top: 18px;
+    box-shadow: 0 6px 16px rgba(232, 131, 58, .25);
+  }
+  .btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+  .btn:active { transform: translateY(1px); }
+
+  .choices { display: grid; gap: 10px; margin-top: 8px; }
+  .choice {
+    width: 100%; text-align: left; font: inherit; font-size: 16px; font-weight: 600; color: var(--fg);
+    background: var(--card); border: 2px solid transparent; border-radius: 14px;
+    padding: 15px 16px; cursor: pointer; min-width: 0; overflow-wrap: anywhere;
+  }
+  .choice:hover { border-color: var(--peach); }
+  .choice[aria-pressed="true"] { border-color: var(--sel); }
+
+  .yesno { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .yesno .choice { text-align: center; }
+  .yesno .choice.yes { background: var(--accent); color: var(--on-accent); }
+
+  .scale { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .scale .choice {
+    width: auto; flex: 1 1 calc(20% - 8px); min-width: 44px; min-height: 48px;
+    text-align: center; padding: 12px 0; font-variant-numeric: tabular-nums;
+  }
+
+  input[type="text"] {
+    width: 100%; font: inherit; font-size: 16px; color: var(--fg);
+    background: var(--bg); border: 2px solid var(--peach); border-radius: 12px;
+    padding: 14px 16px; margin-top: 8px;
+  }
+  input[type="text"]:focus { border-color: var(--sel); outline: none; }
+
+  .card {
+    background: var(--sage); border-radius: 18px; padding: 20px; margin: 14px 0;
+    border-left: 5px solid var(--sel);
+  }
+  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--sel); margin-bottom: 4px; }
+  .card h2 { font-size: 22px; margin-bottom: 8px; }
+
+  ul.list { padding-left: 0; list-style: none; margin: 8px 0 16px; }
+  ul.list li {
+    position: relative; padding-left: 26px; margin-bottom: 10px; min-width: 0; overflow-wrap: anywhere;
+  }
+  ul.list li::before {
+    content: ""; position: absolute; left: 0; top: .5em; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--accent);
+  }
+
+  .solve { background: var(--peach); color: #2F1F17; border-radius: 16px; padding: 16px 18px; margin: 14px 0; }
+  :root[data-theme="dark"] .solve { color: var(--fg); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .solve { color: var(--fg); } }
+
+  .offer {
+    text-align: center; background: var(--sage); border-radius: 18px; padding: 20px;
+    margin: 14px 0; border: 2px solid var(--accent);
+  }
+  .offer-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--sel); margin: 0 0 6px; }
+  .offer-old { font-size: 16px; color: var(--muted); text-decoration: line-through; margin: 0 0 4px; }
+  .offer-now { font-size: 26px; font-weight: 800; color: var(--fg); margin: 0; font-variant-numeric: tabular-nums; }
+
+  .cta-note { text-align: center; font-size: 14px; color: var(--muted); margin-top: 10px; }
+
+  @media (max-width: 360px) {
+    h1 { font-size: 26px; }
+    h2 { font-size: 22px; }
+    .hero { padding: 22px 18px; }
+    .yesno { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <button class="back" id="back" type="button" hidden>&larr; Voltar</button>
+    <span></span>
+  </div>
+  <div class="progress" aria-hidden="true"><div class="progress-fill" id="fill"></div></div>
+  <div id="app" aria-live="polite"></div>
+</main>
+
+<script>
+  // Configuração: troque o link pelo checkout real do Código da Segurança Feminina.
+  const CONFIG = {
+    checkoutUrl: "https://pay.kiwify.com.br/FsFotvN"
+  };
+
+  const FEARS = {
+    traicao: {
+      label: "Medo de ser traída",
+      sims: [
+        "Você já sentiu o coração disparar quando ele demorou a responder uma mensagem?",
+        "Você já pensou em olhar o celular dele, mesmo sem querer?",
+        "Você já tentou esquecer uma desconfiança, mas ela voltou à noite?",
+        "Você gostaria de sentir paz quando ele sai, sem ficar imaginando coisas?"
+      ],
+      profile: "Você vive com um alerta constante, e isso cansa. O medo de ser traída costuma crescer quando a confiança fica sem conversa clara, e a mente preenche o silêncio com histórias.",
+      solve: "Você para de viver em alerta, de checar o celular e de imaginar o pior. E aprende a separar o que é fato do que é só a sua interpretação."
+    },
+    prioridade: {
+      label: "Sentir que não sou prioridade",
+      sims: [
+        "Você sente que o trabalho, os amigos ou outras coisas vêm sempre antes de você?",
+        "Você já deixou de falar o que sente para não parecer carente?",
+        "Você já precisou pedir atenção, em vez de recebê-la?",
+        "Você gostaria de se sentir importante para ele, sem precisar pedir?"
+      ],
+      profile: "Você sente que se importa mais do que é retribuída. Quando a relação perde prioridade, a gente começa a se calar para não incomodar, e aos poucos vai se apagando.",
+      solve: "Você para de se apagar para não incomodar. E aprende a pedir o que precisa com clareza, sem parecer carente, e a se sentir importante para ele."
+    },
+    abandono: {
+      label: "Medo de ser abandonada",
+      sims: [
+        "Você já sentiu medo de que ele se afaste sem avisar?",
+        "Você já ficou em alerta quando ele mudou de tom ou ficou em silêncio?",
+        "Você já aceitou coisas que te machucam só para não perder a relação?",
+        "Você gostaria de sentir segurança de que ele fica, até nos dias difíceis?"
+      ],
+      profile: "Você vive em alerta para não ser deixada. Esse medo faz você aceitar coisas que machucam só para manter a relação por perto, e isso desgasta os dois.",
+      solve: "Você para de aceitar o que te machuca só para não perder a relação. E entende o medo de ser deixada para decidir com mais calma e segurança."
+    },
+    desejo: {
+      label: "Sentir que ele não me deseja mais",
+      sims: [
+        "Você sente falta da atração e do desejo entre vocês?",
+        "Você já se sentiu sem vontade de se aproximar dele e não entendeu por quê?",
+        "Você já deixou de tomar a iniciativa com medo de ser rejeitada?",
+        "Você gostaria de voltar a se sentir desejada e a desejar ele?"
+      ],
+      profile: "Você sente falta da atração e do desejo. Isso dói, e muitas vezes não fica claro se o problema está na relação, em você ou no momento de vida que vocês atravessam.",
+      solve: "Você para de se perguntar o que há de errado com você. E entende o que apaga o desejo, como reacender a atração e voltar a tomar a iniciativa."
+    },
+    indiferenca: {
+      label: "Sentir indiferença",
+      sims: [
+        "Vocês conversam mais sobre tarefas do que sobre sentimentos?",
+        "Você já sentiu que ele não se importa com o que acontece com você?",
+        "Você já se sentiu sozinha mesmo estando acompanhada?",
+        "Você gostaria de sentir que ele se importa com você de novo?"
+      ],
+      profile: "Você sente que está sozinha mesmo acompanhada. A indiferença vai apagando a conexão aos poucos, e por ser silenciosa é mais difícil de nomear.",
+      solve: "Você para de se sentir sozinha dentro da relação. E aprende a nomear essa distância, entender por que ela dói tanto e dar os primeiros passos para se sentir vista de novo."
+    }
+  };
+
+  const state = { nome: "", answers: {}, simAns: {} };
+
+  function baseSteps() {
+    return [
+      { type: "welcome" },
+      { type: "input", key: "nome", title: "Qual é o seu nome?",
+        text: "Me diz como você quer ser chamada, para começarmos a sua avaliação." },
+      { type: "choice", key: "idade", title: "Qual é a sua faixa de idade?", options: [
+        { value: "18-25", label: "18 a 25 anos" },
+        { value: "26-35", label: "26 a 35 anos" },
+        { value: "36-45", label: "36 a 45 anos" },
+        { value: "46+", label: "46 anos ou mais" }
+      ]},
+      { type: "choice", key: "tempo", title: "Há quanto tempo vocês estão juntos?", options: [
+        { value: "<1", label: "Menos de 1 ano" },
+        { value: "1-3", label: "De 1 a 3 anos" },
+        { value: "3-10", label: "De 3 a 10 anos" },
+        { value: "10+", label: "Mais de 10 anos" }
+      ]},
+      { type: "choice", key: "relacao", title: "Como você descreveria a relação hoje?", options: [
+        { value: "tranquila", label: "Tranquila, mas com dúvidas" },
+        { value: "discussoes", label: "Cheia de discussões" },
+        { value: "fria", label: "Fria ou distante" },
+        { value: "alerta", label: "Insegura, sempre em alerta" },
+        { value: "nao-sei", label: "Não sei mais dizer" }
+      ]},
+      { type: "choice", key: "evita", title: "Com que frequência você evita falar algo importante para não criar problema?", options: [
+        { value: "quase-sempre", label: "Quase sempre" },
+        { value: "as-vezes", label: "Às vezes" },
+        { value: "raramente", label: "Raramente" },
+        { value: "nunca", label: "Nunca" }
+      ]},
+      { type: "scale", key: "seguranca", title: "Em uma escala de 0 a 10, quanto você se sente segura no relacionamento hoje?" },
+      { type: "choice", key: "dormir", title: "Você já teve dificuldade para dormir por causa de um assunto que não foi finalizado?", options: [
+        { value: "sim", label: "Sim" },
+        { value: "nao", label: "Não" }
+      ]},
+      { type: "choice", key: "medo", title: "O que mais pesa para você hoje?", options: [
+        { value: "traicao", label: FEARS.traicao.label },
+        { value: "prioridade", label: "Sentir que não sou prioridade" },
+        { value: "abandono", label: FEARS.abandono.label },
+        { value: "desejo", label: FEARS.desejo.label },
+        { value: "indiferenca", label: "Sentir indiferença" }
+      ]},
+      { type: "choice", key: "conversou", title: "Você já tentou conversar sobre isso com ele?", options: [
+        { value: "briga", label: "Sim, e a conversa virou briga" },
+        { value: "nada-mudou", label: "Sim, e nada mudou" },
+        { value: "medo", label: "Ainda não, tenho medo de tocar no assunto" },
+        { value: "guardo", label: "Não, até agora tenho guardado tudo sozinha" }
+      ]},
+      { type: "choice", key: "futuro", title: "Quando você pensa no futuro com ele, o que sente?", options: [
+        { value: "esperanca", label: "Esperança" },
+        { value: "duvida", label: "Dúvida" },
+        { value: "medo", label: "Medo" },
+        { value: "cansaco", label: "Cansaço" }
+      ]},
+      { type: "choice", key: "quer", title: "O que você mais quer neste momento?", options: [
+        { value: "paz", label: "Paz" },
+        { value: "escolhida", label: "Sentir que sou escolhida" },
+        { value: "seguranca", label: "Segurança" },
+        { value: "desejo", label: "Desejo de volta" },
+        { value: "entender", label: "Entender o que está acontecendo" }
+      ]},
+      { type: "result" },
+      { type: "final" }
+    ];
+  }
+
+  let steps = baseSteps();
+  let idx = 0;
+  const history = [];
+
+  const $ = (id) => document.getElementById(id);
+
+  function h(tag, props = {}, ...kids) {
+    const el = document.createElement(tag);
+    for (const k in props) {
+      if (k === "class") el.className = props[k];
+      else if (k === "on") for (const ev in props.on) el.addEventListener(ev, props.on[ev]);
+      else if (k === "hidden") el.hidden = props[k];
+      else el.setAttribute(k, props[k]);
+    }
+    const add = (kid) => {
+      if (kid == null || kid === false) return;
+      if (Array.isArray(kid)) { kid.forEach(add); return; }
+      el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
+    };
+    kids.forEach(add);
+    return el;
+  }
+
+  function go(next) {
+    history.push(idx);
+    idx = next;
+    render();
+  }
+
+  function back() {
+    if (history.length) { idx = history.pop(); render(); }
+  }
+
+  function answerChoice(step, value) {
+    state.answers[step.key] = value;
+    if (step.key === "medo") {
+      steps = steps.filter((s) => s.type !== "sim");
+      state.simAns = {};
+      const pos = steps.indexOf(step);
+      const sims = FEARS[value].sims.map((q, i) => ({ type: "sim", n: i + 1, text: q, fear: value }));
+      steps.splice(pos + 1, 0, ...sims);
+    }
+    go(idx + 1);
+  }
+
+  function offerBlock() {
+    return h("div", { class: "offer" },
+      h("p", { class: "offer-label" }, "Sua oferta"),
+      h("p", { class: "offer-old" }, "Valor normal: R$ 197,00"),
+      h("p", { class: "offer-now" }, "Preço de lançamento: R$ 37,00"));
+  }
+
+  function screenFor(step) {
+    switch (step.type) {
+      case "welcome":
+        return h("section", { class: "welcome" },
+          
+          
+          h("h1", {}, "Como você se sente no seu relacionamento?"),
+          h("p", { class: "lead" },
+            "Em poucos minutos, você descobre como está sua segurança emocional, o que está travando seu relacionamento e como ter mais paz, conexão e confiança."),
+          h("button", { class: "btn", type: "button", on: { click: () => go(idx + 1) } }, "Iniciar"));
+
+      case "input": {
+        const input = h("input", { type: "text", id: "nome-input", placeholder: "Seu primeiro nome", autocomplete: "given-name", maxlength: "40" });
+        const btn = h("button", { class: "btn", type: "button", disabled: "" }, "Continuar");
+        const sync = () => { btn.disabled = input.value.trim().length === 0; };
+        const submit = () => {
+          if (input.value.trim()) { state.nome = input.value.trim(); go(idx + 1); }
+        };
+        input.addEventListener("input", sync);
+        input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
+        btn.addEventListener("click", submit);
+        setTimeout(() => input.focus({ preventScroll: true }), 50);
+        return h("section", { class: "screen" },
+          h("h2", {}, step.title), h("p", { class: "muted" }, step.text), input, btn);
+      }
+
+      case "choice":
+        return h("section", { class: "screen" },
+          h("h2", {}, step.title),
+          h("div", { class: "choices" },
+            step.options.map((opt) => h("button", {
+              class: "choice", type: "button",
+              on: { click: () => answerChoice(step, opt.value) }
+            }, opt.label))));
+
+      case "scale": {
+        const nums = [];
+        for (let i = 0; i <= 10; i++) {
+          nums.push(h("button", {
+            class: "choice", type: "button", "aria-label": `Nota ${i} de 10`,
+            on: { click: () => answerChoice(step, String(i)) }
+          }, String(i)));
+        }
+        return h("section", { class: "screen" },
+          h("h2", {}, step.title),
+          h("p", { class: "muted" }, "0 é nada segura. 10 é totalmente segura."),
+          h("div", { class: "scale" }, nums));
+      }
+
+      case "sim": {
+        const answer = (yes) => {
+          state.simAns[step.n] = yes;
+          go(idx + 1);
+        };
+        return h("section", { class: "screen" },
+          h("p", { class: "kicker" }, `Pergunta ${step.n} de 4`),
+          h("h2", {}, step.text),
+          h("div", { class: "yesno" },
+            h("button", { class: "choice yes", type: "button", on: { click: () => answer(true) } }, "Sim"),
+            h("button", { class: "choice", type: "button", on: { click: () => answer(false) } }, "Não")));
+      }
+
+      case "result": {
+        const a = state.answers;
+        const fear = FEARS[a.medo];
+        const yes = Object.values(state.simAns).filter(Boolean).length;
+        const score = Number(a.seguranca);
+        const faixa = score <= 3 ? "baixa" : score <= 6 ? "em alerta" : score <= 8 ? "razoável" : "alta";
+        const scoreText = score <= 3
+          ? "Hoje a sua sensação de segurança está baixa. Isso pesa no seu dia a dia e no jeito como você se sente com ele."
+          : score <= 6
+          ? "Você está no meio do caminho. Há momentos de paz, mas o medo aparece com frequência."
+          : score <= 8
+          ? "Você se sente razoavelmente segura. Ainda existem pontos que mexem com você, e vale olhar para eles."
+          : "Você se sente bem segura hoje. Mesmo assim, vale entender o que pode abalar essa paz.";
+        const relacao = {
+          tranquila: "Vocês estão em um momento tranquilo, mas com dúvidas que ficam guardadas.",
+          discussoes: "A relação tem muitas discussões, e isso desgasta a confiança entre vocês.",
+          fria: "A relação está mais fria e distante, e essa distância costuma ser sentida antes de ser dita.",
+          alerta: "Você vive a relação em alerta, sempre atenta ao que pode dar errado.",
+          "nao-sei": "Você sente que não sabe mais onde a relação está, e essa confusão cansa."
+        }[a.relacao];
+        const evita = (a.evita === "quase-sempre" || a.evita === "as-vezes")
+          ? "Você costuma calar o que sente para não criar problema. Com o tempo, isso aumenta a distância."
+          : "Você consegue falar do que sente com mais frequência. Isso é um ponto forte para a relação.";
+        const conv = {
+          briga: "Você já tentou conversar e a conversa virou briga. Isso mostra que a conversa precisa de um método.",
+          "nada-mudou": "Você já tentou conversar e nada mudou. O assunto pede um jeito novo de ser tratado.",
+          medo: "Você ainda não tocou no assunto por medo. Esse silêncio mantém o medo vivo.",
+          guardo: "Você tem guardado tudo sozinha. Isso pesa, e não precisa ser assim."
+        }[a.conversou];
+        const futuro = {
+          esperanca: "Quando pensa no futuro, você sente esperança. Esse é um bom ponto de partida.",
+          duvida: "Quando pensa no futuro, você sente dúvida. Ela pede clareza, e não mais pressão.",
+          medo: "Quando pensa no futuro, você sente medo. Esse medo merece atenção.",
+          cansaco: "Quando pensa no futuro, você sente cansaço. Isso mostra que você já vem se esforçando muito."
+        }[a.futuro];
+        const quer = {
+          paz: "paz",
+          escolhida: "sentir que é escolhida",
+          seguranca: "segurança",
+          desejo: "voltar a sentir desejo",
+          entender: "entender o que está acontecendo"
+        }[a.quer];
+        const simText = yes >= 3
+          ? `Você se reconheceu em ${yes} das 4 perguntas sobre esse medo. Ele está bem presente na sua rotina.`
+          : yes >= 1
+          ? `Você se reconheceu em ${yes} das 4 perguntas sobre esse medo. Ele aparece em alguns momentos.`
+          : "Você não se reconheceu nas perguntas sobre esse medo, mas ele ainda pode estar pesando de forma silenciosa.";
+        return h("section", { class: "screen" },
+          h("p", { class: "kicker" }, "Seu diagnóstico"),
+          h("h2", {}, `${state.nome}, veja como você está hoje`),
+          h("div", { class: "card" },
+            h("div", { class: "label" }, `Sua segurança: ${faixa}`),
+            h("p", {}, `${score} de 10. ${scoreText}`)),
+          h("div", { class: "card" },
+            h("div", { class: "label" }, "Como está a relação"),
+            h("p", {}, relacao),
+            h("p", {}, evita)),
+          h("div", { class: "card" },
+            h("div", { class: "label" }, "Seu ponto de atenção"),
+            h("h2", {}, fear.label),
+            h("p", {}, fear.profile),
+            h("p", { class: "muted" }, simText)),
+          h("div", { class: "card" },
+            h("div", { class: "label" }, "O que está travando"),
+            h("p", {}, conv),
+            h("p", {}, futuro),
+            h("p", { class: "muted" }, `Agora, o que você mais quer é ${quer}.`)),
+          h("div", { class: "card" },
+            h("div", { class: "label" }, "O caminho para você"),
+            h("h2", {}, "O que você vai resolver"),
+            h("p", {}, fear.solve),
+            h("p", { class: "muted" }, "Dentro do Código, você encontra o passo a passo para isso, com exercícios de 10 minutos, frases para conversar e um plano de 21 dias.")),
+          offerBlock(),
+          h("button", { class: "btn", type: "button", on: { click: () => go(idx + 1) } }, "Ver o caminho para a sua segurança"));
+      }
+
+      case "final": {
+        const fear = FEARS[state.answers.medo];
+        const conteudo = [
+          "Como identificar se a sua desconfiança tem base ou se é a sua interpretação, sem se culpar por sentir.",
+          "Como entender o medo que te faz se calar e como pedir o que precisa com clareza.",
+          "Exercícios de 10 minutos para acalmar a ansiedade quando ele demora a responder ou fica em silêncio.",
+          "Frases prontas para conversar sobre o que você sente, sem acusar e sem se apagar.",
+          "O Método S.E.G.U.R.A, passo a passo, para construir mais segurança no dia a dia.",
+          "Um plano de 21 dias com tarefas simples, para você sair do alerta e perceber mudanças na prática.",
+          "Um diário de segurança para acompanhar a sua evolução e ver o que já mudou.",
+          "Orientação sobre quando procurar um psicólogo, sem adiar o cuidado com você."
+        ];
+        return h("section", { class: "screen" },
+          h("h2", {}, `${state.nome}, o Código da Segurança Feminina foi feito para o seu momento`),
+          h("p", {}, `Você escolheu "${fear.label}" como o seu principal ponto de atenção. O Código leva você do entendimento à prática, com um caminho claro para cada passo.`),
+          h("h2", { style: "font-size:20px" }, "O que você vai encontrar dentro do Código"),
+          h("ul", { class: "list" }, conteudo.map((g) => h("li", {}, g))),
+          h("h2", { style: "font-size:20px" }, "O que você vai resolver"),
+          h("div", { class: "solve" }, fear.solve),
+          offerBlock(),
+          h("a", { class: "btn", href: CONFIG.checkoutUrl, target: "_blank", rel: "noopener" }, "Quero o Código agora"),
+          h("p", { class: "cta-note" }, "Acesso imediato após a compra."));
+      }
+    }
+    return h("div");
+  }
+
+  function render() {
+    const app = $("app");
+    app.textContent = "";
+    const step = steps[idx];
+    app.append(screenFor(step));
+    $("back").hidden = history.length === 0 || step.type === "welcome";
+    const last = steps.length - 1;
+    $("fill").style.width = Math.round((idx / last) * 100) + "%";
+    window.scrollTo(0, 0);
+  }
+
+  $("back").addEventListener("click", back);
+  render();
+</script>
+</body>
+</html>
