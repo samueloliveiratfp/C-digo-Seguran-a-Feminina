@@ -217,6 +217,24 @@
     .scale { grid-template-columns: repeat(4, 1fr); }
   }
 </style>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2004798880906739');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2004798880906739&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <main class="wrap">
@@ -354,6 +372,25 @@
   };
 
   const state = { nome: "", answers: {}, simAns: {} };
+
+  // Dispara cada evento do Pixel só uma vez
+  const fired = {};
+  function track(ev) {
+    if (fired[ev]) return;
+    fired[ev] = true;
+    try { if (window.fbq) fbq("track", ev); } catch (e) {}
+  }
+
+  // Leva os UTMs (e fbclid) do quiz para o checkout
+  function checkoutLink() {
+    try {
+      const u = new URL(CONFIG.checkoutUrl);
+      new URLSearchParams(window.location.search).forEach((v, k) => u.searchParams.set(k, v));
+      return u.toString();
+    } catch (e) {
+      return CONFIG.checkoutUrl;
+    }
+  }
 
   function baseSteps() {
     return [
@@ -635,7 +672,7 @@
         h("p", { class: "old" }, "De ", h("s", {}, "R$ 197,00"), " por"),
         h("p", { class: "now" }, "R$ 37,00"),
         h("p", { class: "small" }, "Preço de lançamento")),
-      h("a", { class: "btn", href: CONFIG.checkoutUrl, target: "_blank", rel: "noopener" }, "Quero o meu Código"),
+      h("a", { class: "btn", href: checkoutLink(), target: "_blank", rel: "noopener" }, "Quero o meu Código"),
       h("p", { class: "cta-note" }, "Acesso imediato após a compra."));
   }
 
@@ -654,7 +691,7 @@
         const btn = h("button", { class: "btn", type: "button", disabled: "" }, "Continuar");
         const sync = () => { btn.disabled = input.value.trim().length === 0; };
         const submit = () => {
-          if (input.value.trim()) { state.nome = input.value.trim(); go(idx + 1); }
+          if (input.value.trim()) { state.nome = input.value.trim(); track("ViewContent"); go(idx + 1); }
         };
         input.addEventListener("input", sync);
         input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
@@ -717,6 +754,7 @@
     const app = $("app");
     app.textContent = "";
     const step = steps[idx];
+    if (step.type === "result") track("Lead");
     app.append(screenFor(step));
     $("back").hidden = history.length === 0 || step.type === "welcome" || step.type === "analysis";
     const showBar = !["welcome", "analysis", "result", "final"].includes(step.type);
